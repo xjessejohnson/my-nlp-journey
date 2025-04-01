@@ -1,88 +1,133 @@
-HTML
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>My NLP Learning Playground</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
         }
         #inputArea {
             width: 80%;
-            height: 200px;
-            margin-bottom: 10px;
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #processBtn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #processBtn:hover {
+            background-color: #0056b3;
         }
         #outputArea {
             width: 80%;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .resultItem {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .resultItem strong {
+            color: #007bff;
+        }
+        .wordDetail {
+            margin-left: 20px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <h1>My NLP Learning Playground</h1>
-    <p>Enter text below to explore a variety of Natural Language Processing (NLP) features.</p>
+    <p>Enter text below to explore advanced Natural Language Processing (NLP) features, including emotion and entity detection.</p>
 
     <textarea id="inputArea" placeholder="Enter text here..."></textarea><br>
-    <button onclick="performBasicNLP()">Process Text</button>
+    <button id="processBtn" onclick="performAdvancedNLP()">Process Text</button>
 
-    <h2>Output:</h2>
     <div id="outputArea"></div>
 
     <script>
-        function performBasicNLP() {
+        function performAdvancedNLP() {
             const inputText = document.getElementById('inputArea').value;
             const outputDiv = document.getElementById('outputArea');
-            outputDiv.innerHTML = "";
+            outputDiv.innerHTML = "<p>Processing...</p>";
 
             if (!inputText.trim()) {
                 outputDiv.innerHTML = "<p>Please enter some text.</p>";
                 return;
             }
 
-            // Word Count
             const words = inputText.toLowerCase().split(/\s+/).filter(word => word !== "");
-            const wordCount = words.length;
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Word Count:</strong> ${wordCount}</div>`;
-
-            // Unique Word Count
-            const uniqueWords = [...new Set(words)];
-            const uniqueWordCount = uniqueWords.length;
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Unique Words:</strong> ${uniqueWordCount}</div>`;
-
-            // Sentence Count
             const sentences = inputText.split(/[.!?]+/).filter(sentence => sentence.trim() !== "");
-            const sentenceCount = sentences.length;
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentence Count:</strong> ${sentenceCount}</div>`;
 
-            // Word Frequency
+            // Basic Analysis
+            outputDiv.innerHTML = `
+                <div class="resultItem"><strong>Word Count:</strong> ${words.length}</div>
+                <div class="resultItem"><strong>Unique Words:</strong> ${[...new Set(words)].length}</div>
+                <div class="resultItem"><strong>Sentence Count:</strong> ${sentences.length}</div>
+            `;
+
+            // Word Frequency and Details
             const wordFrequency = {};
             words.forEach(word => {
                 wordFrequency[word] = (wordFrequency[word] || 0) + 1;
             });
 
-            outputDiv.innerHTML += `<div class="resultItem"><h3>Word Frequency:</h3>`;
-            for (const word in wordFrequency) {
-                outputDiv.innerHTML += `<p>${word}: ${wordFrequency[word]}</p>`;
-            }
-            outputDiv.innerHTML += `</div>`;
+            let wordDetailsHtml = "<h3>Word Details:</h3>";
+            words.forEach(word => {
+                wordDetailsHtml += `<div class="resultItem"><strong>${word}:</strong> Frequency: ${wordFrequency[word]}`;
+                wordDetailsHtml += `<span class="wordDetail">${getWordDetails(word)}</span></div>`;
+            });
+
+            outputDiv.innerHTML += wordDetailsHtml;
 
             // Average Word Length
-            const averageWordLength = words.reduce((sum, word) => sum + word.length, 0) / wordCount;
+            const averageWordLength = words.reduce((sum, word) => sum + word.length, 0) / words.length;
             outputDiv.innerHTML += `<div class="resultItem"><strong>Average Word Length:</strong> ${averageWordLength.toFixed(2)}</div>`;
 
-            // Basic Keyword Extraction (Top 5)
+            // Top Keywords
             const sortedWords = Object.entries(wordFrequency).sort(([, a], [, b]) => b - a).slice(0, 5).map(([word]) => word);
             outputDiv.innerHTML += `<div class="resultItem"><strong>Top Keywords:</strong> ${sortedWords.join(', ')}</div>`;
         }
+
+        function getWordDetails(word) {
+            const emotions = ["happy", "sad", "angry", "joyful", "fearful", "surprised", "disgusted"];
+            const names = ["john", "jane", "alex", "emily", "david", "sarah"];
+            const places = ["london", "paris", "tokyo", "new york", "rome", "berlin"];
+
+            if (emotions.includes(word)) return " (Emotion)";
+            if (names.includes(word)) return " (Name)";
+            if (places.includes(word)) return " (Place)";
+            return "";
+        }
+
     </script>
-    <p>This is a web-based tool designed to help you explore and understand basic Natural Language Processing (NLP) concepts. By entering text into the provided field, you can analyze various aspects of the text, such as word counts, sentence counts, word frequencies, and more. This project showcases my ongoing efforts to learn and apply NLP techniques.</p>
+    <p>This is a web-based tool designed to help you explore and understand advanced Natural Language Processing (NLP) concepts, now including basic emotion and entity detection. By entering text, you can analyze various aspects like word counts, frequencies, and identify potential emotions, names, and places.</p>
     <p>© 2025 Jesse Johnson. All rights reserved.</p>
 </body>
 </html>
