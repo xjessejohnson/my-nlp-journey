@@ -81,7 +81,7 @@
 
             //Find People
             const people = nlpDoc.people().out('array');
-            if (people.length > 0){
+            if (people.length > 0){ 
                 outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> ${people.join(', ')}</div>`;
             } else {
                 outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> None Found.</div>`;
