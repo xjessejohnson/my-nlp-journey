@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My NLP Journey</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        #inputArea {
+            width: 80%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        #outputArea {
+            width: 80%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .resultItem {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/compromise@latest/builds/compromise.min.js"></script>
+</head>
+<body>
+    <h1>My NLP Learning Playground</h1>
+    <p>Enter text below to explore a variety of NLP features.</p>
+
+    <textarea id="inputArea" placeholder="Enter text here..."></textarea><br>
+    <button onclick="performNLP()">Process Text</button>
+
+    <h2>Output:</h2>
+    <div id="outputArea"></div>
+
+    <script>
+        function performNLP() {
+            const inputText = document.getElementById('inputArea').value;
+            const outputDiv = document.getElementById('outputArea');
+            outputDiv.innerHTML = "";
+
+            const nlpDoc = nlp(inputText);
+
+            // Sentiment Analysis with Detailed Results
+            const sentiment = nlpDoc.sentiment();
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Score:</strong> ${sentiment.score} (${sentiment.comparative > 0 ? 'Positive' : sentiment.comparative < 0 ? 'Negative' : 'Neutral'})</div>`;
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Terms:</strong> ${sentiment.terms.map(t => `${t.text} (${t.score.toFixed(2)})`).join(', ')}</div>`;
+
+            // Named Entity Recognition (NER) with Entity Types
+            const entities = nlpDoc.topics().json();
+            if (entities.length > 0) {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> ${entities.map(e => `${e.text} (${e.type})`).join(', ')}</div>`;
+            } else {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> None found.</div>`;
+            }
+
+            // Part-of-Speech Tagging with Detailed Tags
+            const posTags = nlpDoc.terms().map(term => `${term.text()} (${term.tags().join(', ')})`).join(', ');
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Part-of-Speech Tags:</strong> ${posTags}</div>`;
+
+            // Noun Phrases and Verb Phrases
+            const nounPhrases = nlpDoc.nounPhrases().out('array');
+            if (nounPhrases.length > 0) {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> ${nounPhrases.join(', ')}</div>`;
+            } else {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> None found.</div>`;
+            }
+
+            const verbPhrases = nlpDoc.verbs().out('array');
+            if (verbPhrases.length > 0) {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> ${verbPhrases.join(', ')}</div>`;
+            } else {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> None found.</div>`;
+            }
+
+            // Text Summarization (basic)
+            const sentences = nlpDoc.sentences().out('array');
+            const summary = sentences.slice(0, Math.min(3, sentences.length)).join('. ');
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Basic Summary:</strong> ${summary}</div>`;
+
+            //Find People
+            const people = nlpDoc.people().out('array');
+            if (people.length > 0){
+                outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> ${people.join(', ')}</div>`;
+            } else {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> None Found.</div>`;
+            }
+
+            //Find dates
+            const dates = nlpDoc.dates().out('array');
+            if(dates.length > 0){
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> ${dates.join(', ')}</div>`;
+            } else {
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> None Found.</div>`;
+            }
+        }
+    </script>
+    <p>Natural Language Processing (NLP) is a field of artificial intelligence that focuses on enabling computers to understand, interpret, and generate human language. This project showcases my ongoing efforts to learn and apply various NLP techniques. As a continuous learner in Cybersecurity, psychology, and NLP, I am dedicated to expanding my knowledge and skills in this rapidly evolving area. This project explores sentiment analysis, named entity recognition, part-of-speech tagging, noun and verb phrase extraction, text summarization, people extraction, and date extraction.</p>
+    <p>© 2025 Jesse Johnson. All rights reserved.</p>
+</body>
+</html>
