@@ -37,4 +37,4 @@ As a continuous learner in Cybersecurity, psychology, and NLP, I am dedicated to
 
 ## License
 
-© 2025 Jesse Johnson. All rights reserved.
+© 2025 Jesse Johnson. All rights reserved. 
