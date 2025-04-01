@@ -1,3 +1,5 @@
+HTML
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,87 +24,65 @@
             margin-bottom: 10px;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/compromise@latest/builds/compromise.min.js"></script>
 </head>
 <body>
     <h1>My NLP Learning Playground</h1>
-    <p>Enter text below to explore a variety of NLP features.</p>
+    <p>Enter text below to explore a variety of Natural Language Processing (NLP) features.</p>
 
     <textarea id="inputArea" placeholder="Enter text here..."></textarea><br>
-    <button onclick="performNLP()">Process Text</button>
+    <button onclick="performBasicNLP()">Process Text</button>
 
     <h2>Output:</h2>
     <div id="outputArea"></div>
 
     <script>
-        function performNLP() {
-            try {
-                const inputText = document.getElementById('inputArea').value;
-                const outputDiv = document.getElementById('outputArea');
-                outputDiv.innerHTML = "";
+        function performBasicNLP() {
+            const inputText = document.getElementById('inputArea').value;
+            const outputDiv = document.getElementById('outputArea');
+            outputDiv.innerHTML = "";
 
-                const nlpDoc = nlp(inputText);
-
-                // Sentiment Analysis with Detailed Results
-                const sentiment = nlpDoc.sentiment();
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Score:</strong> ${sentiment.score} (${sentiment.comparative > 0 ? 'Positive' : sentiment.comparative < 0 ? 'Negative' : 'Neutral'})</div>`;
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Terms:</strong> ${sentiment.terms.map(t => `${t.text} (${t.score.toFixed(2)})`).join(', ')}</div>`;
-
-                // Named Entity Recognition (NER) with Entity Types
-                const entities = nlpDoc.topics().json();
-                if (entities.length > 0) {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> ${entities.map(e => `${e.text} (${e.type})`).join(', ')}</div>`;
-                } else {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> None found.</div>`;
-                }
-
-                // Part-of-Speech Tagging with Detailed Tags
-                const posTags = nlpDoc.terms().map(term => `${term.text()} (${term.tags().join(', ')})`).join(', ');
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Part-of-Speech Tags:</strong> ${posTags}</div>`;
-
-                // Noun Phrases and Verb Phrases
-                const nounPhrases = nlpDoc.nounPhrases().out('array');
-                if (nounPhrases.length > 0) {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> ${nounPhrases.join(', ')}</div>`;
-                } else {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> None found.</div>`;
-                }
-
-                const verbPhrases = nlpDoc.verbs().out('array');
-                if (verbPhrases.length > 0) {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> ${verbPhrases.join(', ')}</div>`;
-                } else {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> None found.</div>`;
-                }
-
-                // Text Summarization (basic)
-                const sentences = nlpDoc.sentences().out('array');
-                const summary = sentences.slice(0, Math.min(3, sentences.length)).join('. ');
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Basic Summary:</strong> ${summary}</div>`;
-
-                //Find People
-                const people = nlpDoc.people().out('array');
-                if (people.length > 0){
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> ${people.join(', ')}</div>`;
-                } else {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> None Found.</div>`;
-                }
-
-                //Find dates
-                const dates = nlpDoc.dates().out('array');
-                if(dates.length > 0){
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> ${dates.join(', ')}</div>`;
-                } else {
-                    outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> None Found.</div>`;
-                }
-
-            } catch (error) {
-                console.error("An error occurred:", error);
-                document.getElementById('outputArea').innerHTML = `<p>An error occurred during processing. Please check the console for details.</p>`;
+            if (!inputText.trim()) {
+                outputDiv.innerHTML = "<p>Please enter some text.</p>";
+                return;
             }
+
+            // Word Count
+            const words = inputText.toLowerCase().split(/\s+/).filter(word => word !== "");
+            const wordCount = words.length;
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Word Count:</strong> ${wordCount}</div>`;
+
+            // Unique Word Count
+            const uniqueWords = [...new Set(words)];
+            const uniqueWordCount = uniqueWords.length;
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Unique Words:</strong> ${uniqueWordCount}</div>`;
+
+            // Sentence Count
+            const sentences = inputText.split(/[.!?]+/).filter(sentence => sentence.trim() !== "");
+            const sentenceCount = sentences.length;
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentence Count:</strong> ${sentenceCount}</div>`;
+
+            // Word Frequency
+            const wordFrequency = {};
+            words.forEach(word => {
+                wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+            });
+
+            outputDiv.innerHTML += `<div class="resultItem"><h3>Word Frequency:</h3>`;
+            for (const word in wordFrequency) {
+                outputDiv.innerHTML += `<p>${word}: ${wordFrequency[word]}</p>`;
+            }
+            outputDiv.innerHTML += `</div>`;
+
+            // Average Word Length
+            const averageWordLength = words.reduce((sum, word) => sum + word.length, 0) / wordCount;
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Average Word Length:</strong> ${averageWordLength.toFixed(2)}</div>`;
+
+            // Basic Keyword Extraction (Top 5)
+            const sortedWords = Object.entries(wordFrequency).sort(([, a], [, b]) => b - a).slice(0, 5).map(([word]) => word);
+            outputDiv.innerHTML += `<div class="resultItem"><strong>Top Keywords:</strong> ${sortedWords.join(', ')}</div>`;
         }
     </script>
-    <p>Natural Language Processing (NLP) is a field of artificial intelligence that focuses on enabling computers to understand, interpret, and generate human language. This project showcases my ongoing efforts to learn and apply various NLP techniques. As a continuous learner in Cybersecurity, psychology, and NLP, I am dedicated to expanding my knowledge and skills in this rapidly evolving area. This project explores sentiment analysis, named entity recognition, part-of-speech tagging, noun and verb phrase extraction, text summarization, people extraction, and date extraction.</p>
+    <p>This is a web-based tool designed to help you explore and understand basic Natural Language Processing (NLP) concepts. By entering text into the provided field, you can analyze various aspects of the text, such as word counts, sentence counts, word frequencies, and more. This project showcases my ongoing efforts to learn and apply NLP techniques.</p>
     <p>© 2025 Jesse Johnson. All rights reserved.</p>
 </body>
 </html>
