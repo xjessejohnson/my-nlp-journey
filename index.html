@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My NLP Journey</title>
+    <title>My NLP Learning Playground</title>
     <style>
         body {
             font-family: sans-serif;
@@ -36,63 +36,69 @@
 
     <script>
         function performNLP() {
-            const inputText = document.getElementById('inputArea').value;
-            const outputDiv = document.getElementById('outputArea');
-            outputDiv.innerHTML = "";
+            try {
+                const inputText = document.getElementById('inputArea').value;
+                const outputDiv = document.getElementById('outputArea');
+                outputDiv.innerHTML = "";
 
-            const nlpDoc = nlp(inputText);
+                const nlpDoc = nlp(inputText);
 
-            // Sentiment Analysis with Detailed Results
-            const sentiment = nlpDoc.sentiment();
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Score:</strong> ${sentiment.score} (${sentiment.comparative > 0 ? 'Positive' : sentiment.comparative < 0 ? 'Negative' : 'Neutral'})</div>`;
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Terms:</strong> ${sentiment.terms.map(t => `${t.text} (${t.score.toFixed(2)})`).join(', ')}</div>`;
+                // Sentiment Analysis with Detailed Results
+                const sentiment = nlpDoc.sentiment();
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Score:</strong> ${sentiment.score} (${sentiment.comparative > 0 ? 'Positive' : sentiment.comparative < 0 ? 'Negative' : 'Neutral'})</div>`;
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Sentiment Terms:</strong> ${sentiment.terms.map(t => `${t.text} (${t.score.toFixed(2)})`).join(', ')}</div>`;
 
-            // Named Entity Recognition (NER) with Entity Types
-            const entities = nlpDoc.topics().json();
-            if (entities.length > 0) {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> ${entities.map(e => `${e.text} (${e.type})`).join(', ')}</div>`;
-            } else {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> None found.</div>`;
-            }
+                // Named Entity Recognition (NER) with Entity Types
+                const entities = nlpDoc.topics().json();
+                if (entities.length > 0) {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> ${entities.map(e => `${e.text} (${e.type})`).join(', ')}</div>`;
+                } else {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Named Entities:</strong> None found.</div>`;
+                }
 
-            // Part-of-Speech Tagging with Detailed Tags
-            const posTags = nlpDoc.terms().map(term => `${term.text()} (${term.tags().join(', ')})`).join(', ');
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Part-of-Speech Tags:</strong> ${posTags}</div>`;
+                // Part-of-Speech Tagging with Detailed Tags
+                const posTags = nlpDoc.terms().map(term => `${term.text()} (${term.tags().join(', ')})`).join(', ');
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Part-of-Speech Tags:</strong> ${posTags}</div>`;
 
-            // Noun Phrases and Verb Phrases
-            const nounPhrases = nlpDoc.nounPhrases().out('array');
-            if (nounPhrases.length > 0) {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> ${nounPhrases.join(', ')}</div>`;
-            } else {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> None found.</div>`;
-            }
+                // Noun Phrases and Verb Phrases
+                const nounPhrases = nlpDoc.nounPhrases().out('array');
+                if (nounPhrases.length > 0) {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> ${nounPhrases.join(', ')}</div>`;
+                } else {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Noun Phrases:</strong> None found.</div>`;
+                }
 
-            const verbPhrases = nlpDoc.verbs().out('array');
-            if (verbPhrases.length > 0) {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> ${verbPhrases.join(', ')}</div>`;
-            } else {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> None found.</div>`;
-            }
+                const verbPhrases = nlpDoc.verbs().out('array');
+                if (verbPhrases.length > 0) {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> ${verbPhrases.join(', ')}</div>`;
+                } else {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Verb Phrases:</strong> None found.</div>`;
+                }
 
-            // Text Summarization (basic)
-            const sentences = nlpDoc.sentences().out('array');
-            const summary = sentences.slice(0, Math.min(3, sentences.length)).join('. ');
-            outputDiv.innerHTML += `<div class="resultItem"><strong>Basic Summary:</strong> ${summary}</div>`;
+                // Text Summarization (basic)
+                const sentences = nlpDoc.sentences().out('array');
+                const summary = sentences.slice(0, Math.min(3, sentences.length)).join('. ');
+                outputDiv.innerHTML += `<div class="resultItem"><strong>Basic Summary:</strong> ${summary}</div>`;
 
-            //Find People
-            const people = nlpDoc.people().out('array');
-            if (people.length > 0){ 
-                outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> ${people.join(', ')}</div>`;
-            } else {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> None Found.</div>`;
-            }
+                //Find People
+                const people = nlpDoc.people().out('array');
+                if (people.length > 0){
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> ${people.join(', ')}</div>`;
+                } else {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>People:</strong> None Found.</div>`;
+                }
 
-            //Find dates
-            const dates = nlpDoc.dates().out('array');
-            if(dates.length > 0){
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> ${dates.join(', ')}</div>`;
-            } else {
-                outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> None Found.</div>`;
+                //Find dates
+                const dates = nlpDoc.dates().out('array');
+                if(dates.length > 0){
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> ${dates.join(', ')}</div>`;
+                } else {
+                    outputDiv.innerHTML += `<div class="resultItem"><strong>Dates:</strong> None Found.</div>`;
+                }
+
+            } catch (error) {
+                console.error("An error occurred:", error);
+                document.getElementById('outputArea').innerHTML = `<p>An error occurred during processing. Please check the console for details.</p>`;
             }
         }
     </script>
